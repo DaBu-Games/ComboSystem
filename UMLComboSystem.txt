@@ -1,0 +1,119 @@
+@startuml
+
+interface ICommand
+{
++void execute();
+}
+
+interface IComboRecorder
+{
++ void addCombo(Combo combo);
++ void ResetHistory();
++ ICommand CheckForCombo();
+}
+
+class CommandHistory
+{
+-Combos comboHistory;
+-Combos setCombos;
+}
+
+class NormaleAttackCommand
+{
+-IState currentState; 
++NormaleAttackCommand(IState state); 
+}
+
+class Combos
+{
+-List<Combo> combos; 
+}
+
+class Combo
+{
+-string name;
+-List<Attack> attacks;
+-ICommand Execute;
+-int dmg;
+}
+
+class Attack
+{
+IState state;
+ICommand command; 
+}
+
+class StateMachine
+{
+- IState currentState;
+- List<IState> allStates;
+- List<Transitions> transitions;
++ void OnUpdate();
++ void AddState(IState state);
++ void RemoveState(IState state);
++ void SwitchState(Istate state);
+}
+
+abstract BaseState<T>
+{
+# T StateMachine; 
+# IComboRecorder comboRecorder
+BaseState(T stateMachine, IComboRecorder comboRecorder);
+void OnUpdate();
+void OnEnterState();
+void OnExitState();
+}
+
+interface IState
+{
+void OnUpdate();
+void OnEnterState();
+void OnExitState(); 
+}
+
+class Transition
+{
+- IState fromState;
+- IState toState;
+- System.func<bool> condition;
++ Transiton(fromState, toState, condition);
++ bool CheckCondition(); 
+}
+
+class GameManager
+{
+StateMachine stateMachine;
+- void update(); 
+}
+
+class IdleState
+{
+}
+
+class AirState
+{
+}
+
+class MovingState
+{
+}
+
+BaseState --> AirState
+BaseState --> MovingState
+BaseState --> IdleState
+GameManager ..* StateMachine
+ICommand --> NormaleAttackCommand
+CommandHistory ..* Combos
+IComboRecorder --> CommandHistory 
+BaseState ..* StateMachine
+BaseState ..* IComboRecorder 
+Combos ..* Combo
+Combo ..* ICommand
+Combo ..* Attack
+Attack ..* ICommand
+Attack ..* IState
+Transition ..* IState
+StateMachine ..* Transition
+StateMachine ..* IState
+
+@enduml
