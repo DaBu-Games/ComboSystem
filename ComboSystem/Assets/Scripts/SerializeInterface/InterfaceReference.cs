@@ -1,21 +1,22 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 [Serializable]
 public class InterfaceReference<TInterface, TObject> where TObject : Object where TInterface : class
 {
-    [SerializeField, HideInInspector] private TObject underLyingValue;
+    [SerializeField, HideInInspector] private TObject underlyingValue;
 
     public TInterface Value
     {
-        get => underLyingValue switch
+        get
         {
-            null => null,
-            TInterface @interface => @interface,
-            _ => throw new InvalidOperationException($"{underLyingValue} needs to implement interface {typeof(TInterface)}.")
-        };
-        set => underLyingValue = value switch
+            if (underlyingValue == null) return null;
+            else if (underlyingValue is TInterface @interface) return @interface;
+            else throw new InvalidOperationException($"{underlyingValue} needs to implement interface {typeof(TInterface)}.");
+        }
+        set => underlyingValue = value switch
         {
             null => null,
             TObject newValue => newValue,
@@ -25,15 +26,15 @@ public class InterfaceReference<TInterface, TObject> where TObject : Object wher
 
     public TObject UnderlyingValue
     {
-        get => underLyingValue;
-        set => underLyingValue = value;
+        get => underlyingValue;
+        set => underlyingValue = value;
     }
     
     public InterfaceReference(){}
     
-    public InterfaceReference(TObject target) => underLyingValue = target;
+    public InterfaceReference(TObject target) => underlyingValue = target;
     
-    public InterfaceReference(TInterface @interface) => underLyingValue = @interface as TObject;
+    public InterfaceReference(TInterface @interface) => underlyingValue = @interface as TObject;
 }
 
 [Serializable]
