@@ -2,26 +2,21 @@
 
 interface ICommand
 {
-+void execute();
-}
-
-interface IComboRecorder
-{
-+ void addCombo(Combo combo);
-+ void ResetHistory();
-+ ICommand CheckForCombo();
++void execute(IState state);
++float GetCooldownTime()
 }
 
 class CommandHistory
 {
 -Combos comboHistory;
 -Combos setCombos;
++ void addCombo(Combo combo);
++ void ResetHistory();
++ ICommand CheckForCombo();
 }
 
 class NormaleAttackCommand
 {
--IState currentState; 
-+NormaleAttackCommand(IState state); 
 }
 
 class Combos
@@ -57,9 +52,9 @@ class StateMachine
 abstract BaseState<T>
 {
 # T StateMachine; 
-# IComboRecorder comboRecorder
-BaseState(T stateMachine, IComboRecorder comboRecorder);
+BaseState(T stateMachine);
 void OnUpdate();
+void OnHandelAttack(ICommand command); 
 void OnEnterState();
 void OnExitState();
 }
@@ -80,9 +75,19 @@ class Transition
 + bool CheckCondition(); 
 }
 
+class CoolDownManager {
+    -float timer
+    -float cooldownDuration
+    +void StartCooldown(float duration)
+    +void Update(float deltaTime)
+    +bool IsOnCooldown()
+}
+
 class GameManager
 {
 StateMachine stateMachine;
+CoolDownManager coolDownManager;
+CommandHistory commandHistory; 
 - void update(); 
 }
 
@@ -104,9 +109,9 @@ BaseState --> IdleState
 GameManager ..* StateMachine
 ICommand --> NormaleAttackCommand
 CommandHistory ..* Combos
-IComboRecorder --> CommandHistory 
 BaseState ..* StateMachine
-BaseState ..* IComboRecorder 
+GameManager ..* CommandHistory 
+GameManager ..* CoolDownManager
 Combos ..* Combo
 Combo ..* ICommand
 Combo ..* Attack
