@@ -8,5 +8,7 @@ public class Combination : ScriptableObject
 {
     [SerializeField]private List<Attack> attacks = new List<Attack>();
     [SerializeField]private InterfaceReference<ICommand> execute;
-    [SerializeField]private int dmg;
+    
+    public List<Attack> GetAttacks() => attacks;
+    public ICommand GetExecute() => execute.Value;
 }
