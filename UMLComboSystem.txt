@@ -2,8 +2,21 @@
 
 interface ICommand
 {
-+void execute(IState state);
-+float GetCooldownTime()
++void execute();
++AttackValues GetValues(); 
+}
+
+class AttackValues
+{
+- float cooldown;
+- AttackType attackType;
+- string animation; 
+}
+
+enum AttackType
+{
+normal,
+speciale,
 }
 
 class CommandHistory
@@ -17,6 +30,7 @@ class CommandHistory
 
 class NormaleAttackCommand
 {
+- AttackValues attackValues;
 }
 
 class Combos
@@ -35,7 +49,7 @@ class Combo
 class Attack
 {
 IState state;
-ICommand command; 
+AttackType attackType; 
 }
 
 class StateMachine
@@ -54,7 +68,6 @@ abstract BaseState<T>
 # T StateMachine; 
 BaseState(T stateMachine);
 void OnUpdate();
-void OnHandelAttack(ICommand command); 
 void OnEnterState();
 void OnExitState();
 }
@@ -83,11 +96,23 @@ class CoolDownManager {
     +bool IsOnCooldown()
 }
 
+class InputManager
+{
+- dictionairy <IState, dictionairy<AttackType, ICommand>> allInputBindings;
+- dictionairy<AttackType, ICommand> currentInputBindings;
+- IState currentState; 
++ void AddBinding(IStatet state, AttackType attackType, ICommand command)
++ void switchState(IState state);
+- void ChangeInputBindings(); 
++ void HandleInput(AttackType attackType); 
+}
+
 class GameManager
 {
 StateMachine stateMachine;
 CoolDownManager coolDownManager;
 CommandHistory commandHistory; 
+InputManager inputManager; 
 - void update(); 
 }
 
@@ -115,10 +140,11 @@ GameManager ..* CoolDownManager
 Combos ..* Combo
 Combo ..* ICommand
 Combo ..* Attack
-Attack ..* ICommand
-Attack ..* IState
+Attack ..* AttackType
+NormaleAttackCommand ..* AttackValues
 Transition ..* IState
 StateMachine ..* Transition
 StateMachine ..* IState
+GameManager ..* InputManager
 
 @enduml
