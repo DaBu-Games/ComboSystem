@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f726aea6b0226ac4f9a15081e8c6e185, type: 3}
   m_Name: SuperPunch
   m_EditorClassIdentifier: 
-  comboName: FirePunch
   attacks: []
   execute:
     underlyingValue: {fileID: 0}
-  dmg: 0
