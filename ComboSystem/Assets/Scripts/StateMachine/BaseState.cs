@@ -8,8 +8,6 @@ public abstract class BaseState<T> : IState
 
     public abstract void OnUpdate();
 
-    public abstract void OnFixedUpdate();
-
     public abstract void OnEnterState();
 
     public abstract void OnExitState();

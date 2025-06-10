@@ -15,7 +15,10 @@ public class GameManager : MonoBehaviour
         _stateMachine = new StateMachine();
         _inputManager = new InputManager();
         
+        _stateMachine.AddStateChangeListener( (newState) => _inputManager.ChangeState(newState) );
+        
         //Transitions 
+        _stateMachine.SwitchState( new IdleState(this) );
         
         //Input bindings
         foreach (Attack attack in character.GetAllAttacks())
@@ -24,5 +27,24 @@ public class GameManager : MonoBehaviour
             command.SetValues(attack.GetAttackValues());
             _inputManager.AddInputBinding(attack.GetState(), attack.GetAttackType(), command);
         }
+    }
+
+    public void OnNormalAttackInput()
+    {
+        if(!_cooldownManager.IsOnCooldown())
+            HandleAttack(AttackType.normale);
+    }
+
+    public void OnSpecialAttackInput()
+    {
+        if(!_cooldownManager.IsOnCooldown())
+            HandleAttack(AttackType.speciale);
+    }
+
+    private void HandleAttack(AttackType attackType)
+    {
+        ICommand attack = _inputManager.GetInputBinding(attackType); 
+        attack.Execute(_cooldownManager);
+        _attackHistory.AddAttack(_stateMachine.GetCurrentState(), attackType);
     }
 }

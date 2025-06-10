@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Kirby
   m_EditorClassIdentifier: 
   combinations: []
+  allAttacks: []
