@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface ICommand
 {
+    void SetValues(AttackValues values); 
     void Execute();
-    AttackValues GetAttackValues();
 }

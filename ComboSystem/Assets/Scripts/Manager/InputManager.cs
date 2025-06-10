@@ -17,6 +17,11 @@ public class InputManager
         _inputBindings[state][attackType] = command;
     }
 
+    public ICommand GetInputBinding(AttackType type)
+    {
+        return _currentInputBindigs[type];
+    }
+
     public void ChangeState(IState state)
     {
         _currentState = state;

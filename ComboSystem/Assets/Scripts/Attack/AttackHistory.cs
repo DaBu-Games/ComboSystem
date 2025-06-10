@@ -1,25 +1,19 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AttackHistory
 {
     private List<Combination> _combinations;
-    private List<Attack> _attackHistory = new List<Attack>();
+    private Dictionary<IState, AttackType> _attackHistory = new(); 
 
-    AttackHistory(Combinations combinations)
+    AttackHistory(Character combinations)
     {
         _combinations = combinations.GetCombinations();
     }
-
-    public void AddAttack(Attack attack)
-    {
-        _attackHistory.Add(attack);
-    }
-
     public void AddAttack(IState state, AttackType attackType)
     {
-        Attack attack = new Attack(state, attackType);
-        _attackHistory.Add(attack);
+        _attackHistory[state] = attackType;
     }
 
     public void ResetHistory()
@@ -27,14 +21,27 @@ public class AttackHistory
         _attackHistory.Clear();
     }
 
-    public ICommand CheckForCombo()
+    public Attack CheckForCombo()
     {
+        List<IState> stateHistory = _attackHistory.Keys.ToList();
+        List<AttackType> attackTypesHistory = _attackHistory.Values.ToList();
+        
         foreach (Combination combination in _combinations)
         {
-            if (combination.GetAttacks() == _attackHistory)
+            List<Attack> attacks = combination.GetAttacks();
+            
+            if(attacks.Count != _attackHistory.Count)
+                continue;
+
+            for (int i = 0; i < attacks.Count; i++)
             {
-                return combination.GetExecute(); 
+                if (attacks[i].GetAttackType() != attackTypesHistory[i] || attacks[i].GetState() != stateHistory[i] )
+                {
+                    return null; 
+                }
             }
+
+            return combination.GetExecute(); 
         }
 
         return null; 

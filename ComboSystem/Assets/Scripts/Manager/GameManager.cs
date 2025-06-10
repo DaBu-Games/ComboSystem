@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]private Character character;
+    
     private StateMachine _stateMachine;
     private InputManager _inputManager;
     private CooldownManager _cooldownManager;
@@ -16,5 +18,11 @@ public class GameManager : MonoBehaviour
         //Transitions 
         
         //Input bindings
+        foreach (Attack attack in character.GetAllAttacks())
+        {
+            ICommand command = attack.GetAttackCommand(); 
+            command.SetValues(attack.GetAttackValues());
+            _inputManager.AddInputBinding(attack.GetState(), attack.GetAttackType(), command);
+        }
     }
 }

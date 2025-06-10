@@ -7,8 +7,8 @@ using UnityEngine;
 public class Combination : ScriptableObject
 {
     [SerializeField]private List<Attack> attacks = new List<Attack>();
-    [SerializeField]private InterfaceReference<ICommand> execute;
+    [SerializeField]private Attack execute;
     
     public List<Attack> GetAttacks() => attacks;
-    public ICommand GetExecute() => execute.Value;
+    public Attack GetExecute() => execute;
 }
