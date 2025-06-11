@@ -1,14 +1,12 @@
 using UnityEngine;
 
-public abstract class BaseState<T> : IState
+public abstract class BaseState<T> : ScriptableObject, IState
 {
     protected T stateMachine;
 
-    protected BaseState(T stateMachine) => this.stateMachine = stateMachine;
+    protected void SetStateMachine(T stateMachine) => this.stateMachine = stateMachine;
 
     public abstract void OnUpdate();
-
-    public abstract void OnFixedUpdate();
 
     public abstract void OnEnterState();
 

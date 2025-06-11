@@ -3,18 +3,23 @@ using UnityEngine;
 
 public class InputManager
 {
-    private readonly Dictionary<IState, Dictionary<AttackType, ICommand>> _inputBindings = new(); 
-    private Dictionary<AttackType, ICommand> _currentInputBindigs = new();
+    private readonly Dictionary<IState, Dictionary<AttackType, IAttackCommand>> _inputBindings = new(); 
+    private Dictionary<AttackType, IAttackCommand> _currentInputBindigs = new();
     private IState _currentState;
 
-    public void AddInputBinding(IState state, AttackType attackType, ICommand command)
+    public void AddInputBinding(IState state, AttackType attackType, IAttackCommand attackCommand)
     {
         if (!_inputBindings.ContainsKey(state))
         {
-            _inputBindings[state] = new Dictionary<AttackType, ICommand>(); 
+            _inputBindings[state] = new Dictionary<AttackType, IAttackCommand>(); 
         }
         
-        _inputBindings[state][attackType] = command;
+        _inputBindings[state][attackType] = attackCommand;
+    }
+
+    public IAttackCommand GetInputBinding(AttackType type)
+    {
+        return _currentInputBindigs[type];
     }
 
     public void ChangeState(IState state)
@@ -27,7 +32,7 @@ public class InputManager
     {
         _currentInputBindigs.Clear();
 
-        if (_currentState != null && _inputBindings.TryGetValue(_currentState, out Dictionary<AttackType, ICommand> bindings))
+        if (_currentState != null && _inputBindings.TryGetValue(_currentState, out Dictionary<AttackType, IAttackCommand> bindings))
         {
             _currentInputBindigs = bindings;
         }
