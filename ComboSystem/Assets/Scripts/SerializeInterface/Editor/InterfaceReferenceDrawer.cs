@@ -27,10 +27,6 @@ public class InterfaceReferenceDrawer : PropertyDrawer {
                 component = gameObject.GetComponent(args.InterfaceType);
             } else if (args.InterfaceType.IsAssignableFrom(assignedObject.GetType())) {
                 component = assignedObject;
-            } else if (assignedObject is Component comp && args.InterfaceType.IsAssignableFrom(comp.GetType())) {
-                component = comp;
-            } else if (assignedObject is ScriptableObject so && args.InterfaceType.IsAssignableFrom(so.GetType())) {
-                component = so;
             }
 
             if (component != null) {

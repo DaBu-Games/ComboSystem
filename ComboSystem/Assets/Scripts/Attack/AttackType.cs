@@ -3,5 +3,6 @@ using UnityEngine;
 public enum AttackType
 {
     normale,
-    speciale
+    speciale,
+    combo, 
 }

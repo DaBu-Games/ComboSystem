@@ -1,7 +1,7 @@
 using UnityEngine;
 
-public interface ICommand
+public interface IAttackCommand
 {
-    void SetValues(AttackValues values); 
+    AttackValues GetAttackValues();
     void Execute(CooldownManager cooldownManager);
 }

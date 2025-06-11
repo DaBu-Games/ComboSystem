@@ -34,7 +34,7 @@ public class StateMachine
 
     public void SwitchState(IState state)
     {
-        if(state == null || state.GetType() == _currentState.GetType())
+        if(state == null || state.GetType() == _currentState?.GetType())
             return;
         
         _currentState?.OnExitState();

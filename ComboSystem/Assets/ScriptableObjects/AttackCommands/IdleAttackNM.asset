@@ -9,11 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ede8738df99917d4998a7fad169eeae4, type: 3}
-  m_Name: Attack
+  m_Script: {fileID: 11500000, guid: 5294071a43f582e429fba7444e59bb4c, type: 3}
+  m_Name: IdleAttackNM
   m_EditorClassIdentifier: 
-  state:
-    underlyingValue: {fileID: 0}
-  attackCommand:
-    underlyingValue: {fileID: 0}
-  attackType: 0
+  attackValues:
+    cooldown: 0.1
+    damage: 30
+    animation: IdleAttack
+    attackType: 0
+    state:
+      underlyingValue: {fileID: 11400000, guid: 2605203a96f1fd349a1ac91d5a350d65, type: 2}

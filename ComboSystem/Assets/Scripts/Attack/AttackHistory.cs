@@ -4,16 +4,26 @@ using UnityEngine;
 
 public class AttackHistory
 {
-    private List<Combination> _combinations;
-    private Dictionary<IState, AttackType> _attackHistory = new(); 
+    private List<IComboCommand> _combinations;
+    private List<IAttackCommand> _attackHistory = new List<IAttackCommand>();
 
-    AttackHistory(Character combinations)
+    private float _lastAttackTime = 0f;
+    private readonly float _resetMargin = 1f; 
+
+    public AttackHistory(Character combinations)
     {
         _combinations = combinations.GetCombinations();
     }
-    public void AddAttack(IState state, AttackType attackType)
+    public void AddAttack(IAttackCommand attackCommand)
     {
-        _attackHistory[state] = attackType;
+        float currentTime = Time.time;
+        
+        // reset the attack history if the last attack is longer ago then the reset margin
+        if(currentTime - _lastAttackTime > _resetMargin && _lastAttackTime != 0f)
+            ResetHistory();
+        
+        _attackHistory.Add(attackCommand);
+        _lastAttackTime = currentTime;
     }
 
     public void ResetHistory()
@@ -21,27 +31,20 @@ public class AttackHistory
         _attackHistory.Clear();
     }
 
-    public Attack CheckForCombo()
+    public IComboCommand CheckForCombo()
     {
-        List<IState> stateHistory = _attackHistory.Keys.ToList();
-        List<AttackType> attackTypesHistory = _attackHistory.Values.ToList();
-        
-        foreach (Combination combination in _combinations)
+        foreach (IComboCommand combination in _combinations)
         {
-            List<Attack> attacks = combination.GetAttacks();
+            List<IAttackCommand> attackCommands = combination.GetAttackCommands();
             
-            if(attacks.Count != _attackHistory.Count)
-                continue;
+            if (_attackHistory.Count > attackCommands.Count)
+                break;
 
-            for (int i = 0; i < attacks.Count; i++)
+            if (attackCommands.SequenceEqual(_attackHistory))
             {
-                if (attacks[i].GetAttackType() != attackTypesHistory[i] || attacks[i].GetState() != stateHistory[i] )
-                {
-                    return null; 
-                }
+                ResetHistory();
+                return combination;
             }
-
-            return combination.GetExecute(); 
         }
 
         return null; 

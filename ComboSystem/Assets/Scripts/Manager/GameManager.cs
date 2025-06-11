@@ -1,50 +1,64 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField]private Character character;
     
-    private StateMachine _stateMachine;
+    [Header("States")]
+    [SerializeField]private IdleState idleState;
+    
     private InputManager _inputManager;
     private CooldownManager _cooldownManager;
     private AttackHistory _attackHistory;
+    private StateMachine _stateMachine;
 
     private void Start()
     {
-        _stateMachine = new StateMachine();
+        //Input bindings
         _inputManager = new InputManager();
+        foreach (IAttackCommand command in character.GetAttackCommands())
+        {
+            AttackValues attackValues = command.GetAttackValues();
+            _inputManager.AddInputBinding(attackValues.GetState(), attackValues.GetAttackType(), command);
+        }
         
+        _cooldownManager = new CooldownManager();
+        _attackHistory = new AttackHistory(character); 
+        
+        // state machine set up
+        _stateMachine = new StateMachine();
         _stateMachine.AddStateChangeListener( (newState) => _inputManager.ChangeState(newState) );
         
         //Transitions 
-        _stateMachine.SwitchState( new IdleState(this) );
-        
-        //Input bindings
-        foreach (Attack attack in character.GetAllAttacks())
-        {
-            ICommand command = attack.GetAttackCommand(); 
-            command.SetValues(attack.GetAttackValues());
-            _inputManager.AddInputBinding(attack.GetState(), attack.GetAttackType(), command);
-        }
+        _stateMachine.SwitchState(idleState);
     }
 
-    public void OnNormalAttackInput()
+    public void OnNormalAttackInput(InputAction.CallbackContext context)
     {
-        if(!_cooldownManager.IsOnCooldown())
-            HandleAttack(AttackType.normale);
+        OnAttackInput(context, AttackType.normale);
     }
 
-    public void OnSpecialAttackInput()
+    public void OnSpecialAttackInput(InputAction.CallbackContext context)
     {
-        if(!_cooldownManager.IsOnCooldown())
-            HandleAttack(AttackType.speciale);
+        OnAttackInput(context, AttackType.speciale);
+    }
+
+    private void OnAttackInput(InputAction.CallbackContext context, AttackType type)
+    {
+        if (context.performed && !_cooldownManager.IsOnCooldown())
+            HandleAttack(type);
     }
 
     private void HandleAttack(AttackType attackType)
     {
-        ICommand attack = _inputManager.GetInputBinding(attackType); 
+        IAttackCommand attack = _inputManager.GetInputBinding(attackType);
+        _attackHistory.AddAttack(attack);
+        
+        IComboCommand comboAttack = _attackHistory.CheckForCombo();
+        attack = comboAttack ?? attack;
+        
         attack.Execute(_cooldownManager);
-        _attackHistory.AddAttack(_stateMachine.GetCurrentState(), attackType);
     }
 }

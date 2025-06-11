@@ -1,8 +1,8 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "States/IdleState")]
 public class IdleState : BaseState<GameManager>
 {
-    public IdleState(GameManager stateMachine) : base(stateMachine) { }
     public override void OnUpdate()
     {
         
