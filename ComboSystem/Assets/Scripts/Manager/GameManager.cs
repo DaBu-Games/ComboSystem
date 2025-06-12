@@ -6,17 +6,20 @@ using UnityEngine.InputSystem;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]private Character character;
+    public Animator playerAnimator;
     
     [Header("States")]
     [SerializeField]private IdleState idleState;
     [SerializeField]private MovingState movingState;
     
-    public Animator playerAnimator;
+    [Header("Raycast")]
+    [SerializeField]private LayerMask layerMask;
     
     private InputManager _inputManager;
     private CooldownManager _cooldownManager;
     private AttackHistory _attackHistory;
     private StateMachine _stateMachine;
+    private RayCastManager _rayCastManager;
 
     private float moveInput = 0f; 
 
@@ -46,6 +49,8 @@ public class GameManager : MonoBehaviour
         _stateMachine.AddTransition(new Transition(movingState, idleState, () => !IsMoving()));
         
         _stateMachine.SwitchState(idleState);
+
+        _rayCastManager = new RayCastManager(transform.forward, layerMask);
     }
 
     private void Update()
@@ -98,6 +103,7 @@ public class GameManager : MonoBehaviour
         IComboCommand comboAttack = _attackHistory.CheckForCombo();
         attack = comboAttack ?? attack;
         
-        attack.Execute(_cooldownManager, playerAnimator);
+        _rayCastManager.SetPosition(this.transform);
+        attack.Execute(_cooldownManager, playerAnimator, _rayCastManager);
     }
 }
