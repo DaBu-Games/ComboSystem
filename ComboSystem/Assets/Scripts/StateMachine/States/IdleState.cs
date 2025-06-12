@@ -10,7 +10,7 @@ public class IdleState : BaseState<GameManager>
 
     public override void OnEnterState()
     {
-        
+        stateMachine.playerAnimator.Play("Idle");
     }
 
     public override void OnExitState()

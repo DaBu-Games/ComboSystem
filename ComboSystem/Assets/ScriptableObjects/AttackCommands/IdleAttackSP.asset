@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5294071a43f582e429fba7444e59bb4c, type: 3}
-  m_Name: IdleAttackNM
+  m_Name: IdleAttackSP
   m_EditorClassIdentifier: 
   attackValues:
-    damage: 30
-    animation: {fileID: 7400000, guid: a6f3a25cb29e6224195d77fdbaee9c85, type: 2}
-    attackType: 0
+    damage: 40
+    animation: {fileID: 7400000, guid: e502c6f0f9f860e41a15f33c43d88b94, type: 2}
+    attackType: 1
     state:
       underlyingValue: {fileID: 11400000, guid: 2605203a96f1fd349a1ac91d5a350d65, type: 2}

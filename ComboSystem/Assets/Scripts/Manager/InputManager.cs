@@ -24,6 +24,9 @@ public class InputManager
 
     public void ChangeState(IState state)
     {
+        if (state == null)
+            return;
+        
         _currentState = state;
         ChangeCurrentInputBinding(); 
     }
@@ -31,10 +34,15 @@ public class InputManager
     private void ChangeCurrentInputBinding()
     {
         _currentInputBindigs.Clear();
-
-        if (_currentState != null && _inputBindings.TryGetValue(_currentState, out Dictionary<AttackType, IAttackCommand> bindings))
+        
+        if (_inputBindings.TryGetValue(_currentState, out Dictionary<AttackType, IAttackCommand> bindings))
         {
-            _currentInputBindigs = bindings;
+            _currentInputBindigs.Clear();
+            
+            foreach (var binding in bindings)
+            {
+                _currentInputBindigs[binding.Key] = binding.Value;
+            }
         }
     }
 }

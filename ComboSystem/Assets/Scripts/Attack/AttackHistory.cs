@@ -8,12 +8,13 @@ public class AttackHistory
     private List<IAttackCommand> _attackHistory = new List<IAttackCommand>();
 
     private float _lastAttackTime = 0f;
-    private readonly float _resetMargin = 1f; 
+    private readonly float _resetMargin = 2f; 
 
     public AttackHistory(Character combinations)
     {
         _combinations = combinations.GetCombinations();
     }
+    
     public void AddAttack(IAttackCommand attackCommand)
     {
         float currentTime = Time.time;
