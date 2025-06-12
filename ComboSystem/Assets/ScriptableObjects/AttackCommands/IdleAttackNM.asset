@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackValues:
     damage: 30
+    range: 0.75
     animation: {fileID: 7400000, guid: a6f3a25cb29e6224195d77fdbaee9c85, type: 2}
     attackType: 0
     state:

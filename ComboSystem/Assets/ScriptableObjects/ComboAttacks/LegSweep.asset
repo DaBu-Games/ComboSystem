@@ -17,6 +17,7 @@ MonoBehaviour:
   - underlyingValue: {fileID: 11400000, guid: 71aaade1307e9b340bac47b5ba6d483b, type: 2}
   attackValues:
     damage: 30
+    range: 1.25
     animation: {fileID: 7400000, guid: c22f0a9170a30024fbfb2e4e8cc03db3, type: 2}
     attackType: 2
     state:

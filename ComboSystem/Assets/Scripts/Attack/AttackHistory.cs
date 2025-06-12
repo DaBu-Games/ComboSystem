@@ -8,7 +8,7 @@ public class AttackHistory
     private List<IAttackCommand> _attackHistory = new List<IAttackCommand>();
 
     private float _lastAttackTime = 0f;
-    private readonly float _resetMargin = 2f; 
+    private readonly float _resetMargin = 3f; 
 
     public AttackHistory(Character combinations)
     {
@@ -29,25 +29,35 @@ public class AttackHistory
 
     public void ResetHistory()
     {
+        Debug.Log("Reset history");
         _attackHistory.Clear();
     }
 
     public IComboCommand CheckForCombo()
     {
+        if (_attackHistory.Count == 0)
+            return null;
+        
         foreach (IComboCommand combination in _combinations)
         {
             List<IAttackCommand> attackCommands = combination.GetAttackCommands();
             
-            if (_attackHistory.Count > attackCommands.Count)
-                break;
-
             if (attackCommands.SequenceEqual(_attackHistory))
             {
                 ResetHistory();
                 return combination;
             }
+            else if ( _attackHistory.Count < attackCommands.Count)
+            {
+                List<IAttackCommand> commands = attackCommands.GetRange(0, _attackHistory.Count);
+                if (commands.SequenceEqual(_attackHistory))
+                {
+                    return null;
+                }
+            }
         }
 
+        ResetHistory(); 
         return null; 
     }
 }

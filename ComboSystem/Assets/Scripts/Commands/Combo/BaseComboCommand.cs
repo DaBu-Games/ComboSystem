@@ -8,5 +8,5 @@ public abstract class BaseComboCommand : ScriptableObject, IComboCommand
     [SerializeField]protected AttackValues attackValues; 
     public AttackValues GetAttackValues() => attackValues; 
     public List<IAttackCommand> GetAttackCommands() =>  attackCommands.Select(x => x.Value).ToList();
-    public abstract void Execute(CooldownManager cooldownManager, Animator animator); 
+    public abstract void Execute(CooldownManager cooldownManager, Animator animator, RayCastManager rayCastManager); 
 }
