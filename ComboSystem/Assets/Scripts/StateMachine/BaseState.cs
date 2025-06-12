@@ -4,7 +4,7 @@ public abstract class BaseState<T> : ScriptableObject, IState
 {
     protected T stateMachine;
 
-    protected void SetStateMachine(T stateMachine) => this.stateMachine = stateMachine;
+    public void SetStateMachine(T stateMachine) => this.stateMachine = stateMachine;
 
     public abstract void OnUpdate();
 

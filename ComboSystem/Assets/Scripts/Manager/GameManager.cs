@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,11 +9,16 @@ public class GameManager : MonoBehaviour
     
     [Header("States")]
     [SerializeField]private IdleState idleState;
+    [SerializeField]private MovingState movingState;
+    
+    public Animator playerAnimator;
     
     private InputManager _inputManager;
     private CooldownManager _cooldownManager;
     private AttackHistory _attackHistory;
     private StateMachine _stateMachine;
+
+    private float moveInput = 0f; 
 
     private void Start()
     {
@@ -29,10 +35,43 @@ public class GameManager : MonoBehaviour
         
         // state machine set up
         _stateMachine = new StateMachine();
-        _stateMachine.AddStateChangeListener( (newState) => _inputManager.ChangeState(newState) );
+        _stateMachine.AddStateChangeListener((newState) => _inputManager.ChangeState(newState));
+        
+        // state setup
+        idleState.SetStateMachine(this); 
+        movingState.SetStateMachine(this);
         
         //Transitions 
+        _stateMachine.AddTransition(new Transition(idleState, movingState, () => IsMoving()));
+        _stateMachine.AddTransition(new Transition(movingState, idleState, () => !IsMoving()));
+        
         _stateMachine.SwitchState(idleState);
+    }
+
+    private void Update()
+    {
+        if(!_cooldownManager.IsOnCooldown())
+            _stateMachine.OnUpdate();
+    }
+
+    public bool IsMoving()
+    {
+        return math.abs(moveInput) > 0f;
+    }
+
+    public bool IsMovingForward()
+    {
+        return moveInput > 0f;
+    }
+    
+    public void ResetAnimation()
+    {
+        _stateMachine.GetCurrentState().OnEnterState();
+    }
+
+    public void OnMoveInput(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>().x;
     }
 
     public void OnNormalAttackInput(InputAction.CallbackContext context)
@@ -59,6 +98,6 @@ public class GameManager : MonoBehaviour
         IComboCommand comboAttack = _attackHistory.CheckForCombo();
         attack = comboAttack ?? attack;
         
-        attack.Execute(_cooldownManager);
+        attack.Execute(_cooldownManager, playerAnimator);
     }
 }

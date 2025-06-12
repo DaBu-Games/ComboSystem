@@ -14,5 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combinations:
   - underlyingValue: {fileID: 11400000, guid: 007fed27cfee4c44ea533173cb146f2e, type: 2}
+  - underlyingValue: {fileID: 11400000, guid: e5ae4dd41034e12438413fcd8d07f404, type: 2}
+  - underlyingValue: {fileID: 11400000, guid: d53e2d027cd7cd14ca84c7f73a4b2b0d, type: 2}
   attackCommands:
   - underlyingValue: {fileID: 11400000, guid: 6f7c0b3ab09086d479e924fc513ebc28, type: 2}
+  - underlyingValue: {fileID: 11400000, guid: ae876304c77ab8c419ffeffe7b66f956, type: 2}
+  - underlyingValue: {fileID: 11400000, guid: d5a6ec7d73ec4c648a71dee19d192911, type: 2}
+  - underlyingValue: {fileID: 11400000, guid: 71aaade1307e9b340bac47b5ba6d483b, type: 2}

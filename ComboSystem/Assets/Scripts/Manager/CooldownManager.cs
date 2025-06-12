@@ -8,7 +8,7 @@ public class CooldownManager
 
     public void StartCooldown(float duration)
     {
-        _lastUsedTime = Time.deltaTime;
+        _lastUsedTime = Time.time;
         _cooldownDuration = duration;
         _isOnCooldown = true;
     }
