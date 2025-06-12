@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RayCastManager : ISubject
+public class RayCastManager : IAttackSubject
 {
    private readonly Vector3 _direction;
    private readonly LayerMask _layerMask;
    private Vector3 _position; 
-   private List<IObserver> _observers = new List<IObserver>();
+   private List<IAttackObserver> _observers = new List<IAttackObserver>();
    private float _currentDmg = 0f;
 
    public RayCastManager(Vector3 direction, LayerMask layerMask)
@@ -29,19 +29,19 @@ public class RayCastManager : ISubject
       }
    }
 
-   public void Attach(IObserver observer)
+   public void Attach(IAttackObserver attackObserver)
    {
-      _observers.Add(observer);
+      _observers.Add(attackObserver);
    }
 
-   public void Detach(IObserver observer)
+   public void Detach(IAttackObserver attackObserver)
    {
-      _observers.Remove(observer);
+      _observers.Remove(attackObserver);
    }
 
    public void Notify()
    {
-      foreach (IObserver observer in _observers)
+      foreach (IAttackObserver observer in _observers)
       {
          observer.Update(this, _currentDmg);
       }

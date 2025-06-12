@@ -16,15 +16,19 @@ public class GameManager : MonoBehaviour
     [Header("Raycast")]
     [SerializeField]private LayerMask layerMask;
     
-    [Header("UI dmg")]
+    [Header("UI")]
     [SerializeField]private TextMeshProUGUI dmgCounter;
+    [SerializeField] private TextMeshProUGUI timer; 
+    [SerializeField] private GameObject endScreen;
     
     private InputManager _inputManager;
     private CooldownManager _cooldownManager;
     private AttackHistory _attackHistory;
     private StateMachine _stateMachine;
     private UIDmgCounter _dmgCounter;
+    private UITimer _uiTimer;
     private RayCastManager _rayCastManager;
+    private SceneManager _sceneManager;
 
     private float moveInput = 0f; 
 
@@ -56,14 +60,27 @@ public class GameManager : MonoBehaviour
         _stateMachine.SwitchState(idleState);
 
         _dmgCounter = new UIDmgCounter(dmgCounter);
+        _sceneManager = new SceneManager(endScreen); 
+        
+        _uiTimer = new UITimer(timer);
+        _uiTimer.Attach(_sceneManager);
+        _uiTimer.Attach(_dmgCounter);
+        
         _rayCastManager = new RayCastManager(transform.forward, layerMask);
         _rayCastManager.Attach(_dmgCounter);
     }
 
     private void Update()
     {
+        _uiTimer.UpdateTime();
+        
         if(!_cooldownManager.IsOnCooldown())
             _stateMachine.OnUpdate();
+    }
+
+    public void StartTimer()
+    {
+        _uiTimer.StartTimer();
     }
 
     public bool IsMoving()
@@ -83,12 +100,15 @@ public class GameManager : MonoBehaviour
 
     public void OnMoveInput(InputAction.CallbackContext context)
     {
-        moveInput = context.ReadValue<Vector2>().x;
+        if(_uiTimer.TimerIsActive())
+            moveInput = context.ReadValue<Vector2>().x;
+        else if(moveInput > 0f)
+            moveInput = 0f;
     }
 
     public void OnNormalAttackInput(InputAction.CallbackContext context)
     {
-        OnAttackInput(context, AttackType.normale);
+       OnAttackInput(context, AttackType.normale);
     }
 
     public void OnSpecialAttackInput(InputAction.CallbackContext context)
@@ -96,9 +116,14 @@ public class GameManager : MonoBehaviour
         OnAttackInput(context, AttackType.speciale);
     }
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     private void OnAttackInput(InputAction.CallbackContext context, AttackType type)
     {
-        if (context.performed && !_cooldownManager.IsOnCooldown())
+        if (context.performed && !_cooldownManager.IsOnCooldown() && _uiTimer.TimerIsActive() )
             HandleAttack(type);
     }
 
